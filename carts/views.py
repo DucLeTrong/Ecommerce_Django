@@ -76,7 +76,7 @@ def cart(request, total=0.0, quantity=0, cart_items=None):
         "cart_items" : cart_items,
         "total"      : total,
         "quantity"   : quantity,
-        "tax"        : tax,
+        "tax"        : round(tax, 2),
         "grand_total": grand_total, 
     }
 
