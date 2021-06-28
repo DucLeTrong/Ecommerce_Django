@@ -4,8 +4,11 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 <div class="container">
-	<h2 class="title-page">Our Store</h2>
-	
+	{% if "search" in request.path %}
+		<h2 class="title-page"> Search Result</h2>
+	{% else %}
+		<h2 class="title-page">Our Store</h2>
+	{% endif %}
 </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION INTRO END// ========================= -->
@@ -127,29 +130,33 @@
 </header><!-- sect-heading -->
 
 <div class="row">
-    {% for product in products %}
-        <div class="col-md-4">
-            <figure class="card card-product-grid">
-                <div class="img-wrap"> 
-                    
-                    <img src={{ product.images.url }}>
-                    
-                </div> <!-- img-wrap.// -->
-                <figcaption class="info-wrap">
-                    <div class="fix-height">
-                        <a href= {{ product.get_url }} class="title">{{ product.product_name }}</a>
-                        <div class="price-wrap mt-2">
-                            <span class="price">{{ product.price }}</span>
-                            <del class="price-old">{{ product.price }}</del>
-                        </div> <!-- price-wrap.// -->
-                    </div>
-                    <a href= {{ product.get_url }} class="btn btn-block btn-success"> View details </a>
-                </figcaption>
-            </figure>
-        </div> <!-- col.// -->
-    {% endfor %}
-
+	{% if prodcut %}
+		{% for product in products %}
+			<div class="col-md-4">
+				<figure class="card card-product-grid">
+					<div class="img-wrap"> 
+						
+						<img src={{ product.images.url }}>
+						
+					</div> <!-- img-wrap.// -->
+					<figcaption class="info-wrap">
+						<div class="fix-height">
+							<a href= {{ product.get_url }} class="title">{{ product.product_name }}</a>
+							<div class="price-wrap mt-2">
+								<span class="price">{{ product.price }}</span>
+								<del class="price-old">{{ product.price }}</del>
+							</div> <!-- price-wrap.// -->
+						</div>
+						<a href= {{ product.get_url }} class="btn btn-block btn-success"> View details </a>
+					</figcaption>
+				</figure>
+			</div> <!-- col.// -->
+		{% endfor %}
+	{% else %}
+		<h2 class="text-center"> No result found. Please try again!</h2>
+	{% endif %}
 </div> <!-- row end.// -->
+
 	{% if products.has_other_pages %}
 		<nav class="mt-4" aria-label="Page navigation sample">
 		<ul class="pagination">
@@ -177,4 +184,12 @@
 		</ul>
 		</nav>
 	{% endif %}
+</main> <!-- col.// -->
+
+</div>
+
+</div> <!-- container .//  -->
+</section>
+
 {% endblock %}
+

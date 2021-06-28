@@ -2,6 +2,7 @@ from django.core import paginator
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 
 from .models import Product
 
@@ -22,10 +23,7 @@ def store(request, category_slug=None):
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
 
-    context = {
-        "products" : paged_products,
-        "number_products" : number_products,
-    }
+    
     
     return render(request, "store/store.html", context)
 
@@ -44,3 +42,22 @@ def product_detail(request, category_slug = None, product_slug=None):
     }
 
     return render(request, "store/product_detail.html", context)
+
+def search(request):
+    if "keyword" in request.GET:
+        keywork = request.GET["keyword"]
+        if keywork:
+            searching_products = Product.objects.order_by("-created_date").filter(Q(description__contains=keywork) | Q(product_name__contains=keywork))
+        else:
+            searching_products = Product.objects.order_by("-created_date").filter(is_available=True)
+        # print(len(searching_products))
+    number_products = len(searching_products)
+    # paginator = Paginator(searching_products, 3)
+    # page = request.GET.get('page')
+    # paged_products = paginator.get_page(page)
+    # print(searching_products)
+    context = {
+        "products" : searching_products,
+        "number_products" : number_products,
+    }
+    return render(request, "store/store.html", context)
