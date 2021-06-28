@@ -1,5 +1,8 @@
+from django.core import paginator
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+
 from .models import Product
 
 from category.models import Category
@@ -13,10 +16,17 @@ def store(request, category_slug=None):
         category = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.all().filter(category=category, is_available=True)
     else:
-        products = Product.objects.all().filter(is_available=True)
+        products = Product.objects.all().filter(is_available=True).order_by("id")
+        number_products = len(products)
+        paginator = Paginator(products, 6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+
     context = {
-        "products" : products
+        "products" : paged_products,
+        "number_products" : number_products,
     }
+    
     return render(request, "store/store.html", context)
 
 def product_detail(request, category_slug = None, product_slug=None):
