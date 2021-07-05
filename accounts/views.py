@@ -80,9 +80,54 @@ def login(request):
                 if is_cart_item_exists:
                     card_item = CartItem.objects.filter(cart=cart)
 
+                    product_variation = []
+                    id_new_cart = []
                     for item in card_item:
-                        item.user = user
-                        item.save()
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+                        id_new_cart.append(item.id)
+                    
+                    card_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in card_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                    # for pr in product_variation:
+                    #     if pr in ex_var_list:
+                    #         index = ex_var_list.index(pr)
+                    #         item_id = id[index]
+                    #         item = CartItem.objects.get(id=item_id)
+                    #         item.quantity += 1
+                    #         item.user = user
+                    #         item.save()
+                    #     else:
+                    #         cart_item = CartItem.objects.filter(cart=cart)
+                    #         for item in cart_item:
+                    #             item.user = user
+                    #             item.save()
+                    for pr in product_variation:
+                        item_id_new_cart = id_new_cart[product_variation.index(pr)]
+                        item_in_new_cart = CartItem.objects.get(id=item_id_new_cart)
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            # item_in_new_ses = CartItem.objects.get(cart=cart, variations=pr)
+                            item.quantity += item_in_new_cart.quantity
+                            item.user = user
+                            item.save()
+                        else:
+                            item_in_new_cart.user = user
+                            item_in_new_cart.save()
+                            # for item in cart_item:
+                            #     item.user = user
+                            #     item.save()
+                    # for item in card_item:
+                    #     item.user = user
+                    #     item.save()
             except:
                 pass
             auth.login(request, user)
@@ -135,7 +180,7 @@ def forgotPassword(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user)
             })
-            print("ok")
+            # print("ok")
             to_email = email
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
