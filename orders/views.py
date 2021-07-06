@@ -6,12 +6,45 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from carts.models import CartItem
 from .forms import OrderForm
-from .models import Order
+from .models import Order, Payment
 
 # Create your views here.
 
 def payments(request):
     return render(request, 'orders/payments.html')
+
+def make_payment(request):
+    if request.method == 'POST':
+        data = request.POST
+        order_id = data['orderID']
+
+        time_now = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+        trans_id = order_id + "_" + time_now
+        payment_method = data['payment_method']
+        amount_paid = data['amount']
+        status = data['status']
+
+        
+
+        payment = Payment(
+            user = request.user,
+            payment_id = trans_id,
+            payment_method = payment_method,
+            amount_paid = amount_paid,
+            status = status
+
+        )
+        payment.save()
+
+        order = Order.objects.get(order_number=order_id)
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+
+        # print(order_id, payment_method, amount_paid, status)
+
+    return HttpResponse('ok')
 
 
 def place_order(request, total = 0, quantity = 0):

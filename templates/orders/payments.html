@@ -105,7 +105,24 @@
 			<p class="text-center mb-3">
 				<img src={% static 'images/misc/payments.png' %} height="26">
 			</p>
-			<a href={% url 'checkout' %} class="btn btn-primary btn-block"> Make Payment </a>
+            {% comment %} <form action="/action.php">
+                <input type="textbox" name="Username" readonly value=" ' . $user->username . ' ">
+                <input type="checkbox" name="check1" value="selected">
+                <input type="button" value="submit">
+			    <a href={% url 'make_payment' %} class="btn btn-primary btn-block"> Make Payment </a>
+            </form> {% endcomment %}
+            <form action={% url 'make_payment' %} method="POST"> 
+                {% csrf_token %}
+
+                <input type="hidden" class="form-control" name="orderID" value={{order.order_number}}>
+            
+                <input type="hidden" class="form-control" name="payment_method" value='PayPal'>
+                <input type="hidden" class="form-control" name="amount" value={{ grand_total }}>
+                <input type="hidden" class="form-control" name="status" value='completed'>
+                {% comment %} <input type="hidden" class="form-control" name="trans" value='PayPal'> {% endcomment %}
+                
+                <button type="submit" class="btn btn-primary btn-block"> Make Payment </button>
+            </form>
 		</div> <!-- card-body.// -->
 		</div> <!-- card.// -->
 
@@ -117,4 +134,5 @@
 <!-- ============================ COMPONENT 1 END .// ================================= -->
 </div> <!-- container -->
 </section>
+
 {% endblock %}
