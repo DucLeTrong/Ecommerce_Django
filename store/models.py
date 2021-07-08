@@ -1,8 +1,9 @@
 from typing import AsyncIterable
 from django.db import models
+from django.db.models.aggregates import Count
 from django.db.models.deletion import CASCADE
 from django.urls import reverse
-from django.db. models import Avg
+from django.db.models import Avg
 from category.models import Category
 from accounts.models import Account
 
@@ -30,8 +31,15 @@ class Product(models.Model):
         avg = 0
         if reviews['average'] is not None:
             avg = float(reviews['average'])
-
         return avg
+
+    def get_number_reviews(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=Count('id'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
+
 class VariationManager(models.Manager):
     def colors(self):
         return super(VariationManager, self).filter(variation_category="color", is_active=True)

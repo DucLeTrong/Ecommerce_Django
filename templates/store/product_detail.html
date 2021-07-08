@@ -86,7 +86,7 @@
 		<form action="{% url 'submit_review' single_product.id %}" method="POST">
 			{% csrf_token %}
 			<h5>Write Your Review</h5>
-			{{single_product.average_reviews}}
+			
 
 			<div>
 				<!-- Rating stars -->
@@ -144,14 +144,15 @@
 <br>
 <header class="section-heading">
 	<h3>Customer Reviews </h3>
+	{{single_product.average_reviews}}
 	<div class="rating-star">
 		<span>
-			<i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if single_product.averageReview < 1.5 %}-o{% elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if single_product.averageReview < 2.5 %}-o{% elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if single_product.averageReview < 3.5 %}-o{% elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-			<i class="fa fa-star{% if single_product.averageReview < 4.5 %}-o{% elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-	<span>{{single_product.countReview}} reviews</span>
+			<i class="fa fa-star{% if single_product.average_reviews < 0.5 %}-o{% elif single_product.average_reviews >= 0.5 and single_product.average_reviews < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if single_product.average_reviews < 1.5 %}-o{% elif single_product.average_reviews >= 1.5 and single_product.average_reviews < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if single_product.average_reviews < 2.5 %}-o{% elif single_product.average_reviews >= 2.5 and single_product.average_reviews < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if single_product.average_reviews < 3.5 %}-o{% elif single_product.average_reviews >= 3.5 and single_product.average_reviews < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+			<i class="fa fa-star{% if single_product.average_reviews < 4.5 %}-o{% elif single_product.average_reviews >= 4.5 and single_product.average_reviews < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+	<span>{{single_product.get_number_reviews}} reviews</span>
 			</span>
 	</div>
 
