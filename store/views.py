@@ -10,6 +10,7 @@ from .forms import ReviewForm
 from category.models import Category
 from carts.views import _cart_id
 from carts.models import CartItem
+from orders.models import OrderProduct
 from django.contrib import messages
 
 # Create your views here.
@@ -47,9 +48,20 @@ def product_detail(request, category_slug = None, product_slug=None):
     except Exception as e:
         raise e
 
+    try:
+        orderproduct = OrderProduct.objects.filter(user=request.user, product_id=single_product.id).exists()
+        print(orderproduct)
+    except OrderProduct.DoesNotExist:
+        orderproduct = None
+
+    # Get the reviews
+    reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
+    
     context = {
         "single_product" : single_product, 
         "in_cart"        : in_cart,
+        "orderproduct"   : orderproduct,
+        "reviews"        : reviews,
     }
 
     return render(request, "store/product_detail.html", context)
